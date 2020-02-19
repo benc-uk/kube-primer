@@ -1,7 +1,7 @@
 <!-- 
    Simple slides
    Ben Coleman
-   v3 - removed jQuery, using CSS3 animations
+   v3 - removed jQuery, using CSS3 animations, preload/cache next slide, slide num, timer
 -->
 <!doctype html>
 <html>
@@ -29,11 +29,29 @@
          left: 50%;
          top: 50%;
          transform: translate(-50%, -50%);
-
          animation-timing-function: ease-in-out;         
       }
       #message {
          display: none;
+      }  
+      #slidePreload {
+         visibility: hidden;
+      }
+      #slideIndicator {
+         visibility: visible;
+         position: absolute;
+         text-shadow: 3px 3px #111111;
+         bottom: 20px;
+         left: 16px;
+         font-size: 26px;
+      }
+      #timeIndicator {
+         visibility: visible;
+         position: absolute;
+         text-shadow: 3px 3px #111111;
+         bottom: 20px;
+         right: 16px;
+         font-size: 26px;         
       }
       @keyframes fadeout {
          0%   { opacity: 1; }
@@ -43,19 +61,18 @@
       @keyframes fadein {
          0%   { opacity: 0; }
          100% { opacity: 1; }
-      }      
-      #preload {
-         visibility: hidden;
-      }
+      }          
    </style>
 </head>
 
 <body oncontextmenu="clickSlide(-1); return false;" onclick="clickSlide(+1)">
-   <img id="slide" src="Slide1.PNG" onerror="slideError()" /><br/>
-   <img id="preload" src="Slide2.PNG" /><br/>
    <div id="message">
       <b>No slides found!</b><br/><br/>Please export all slides from PowerPoint to PNG<br/>e.g. Slide1.png, Slide2.png, etc
    </div>
+   <img id="slide" src="" onerror="slideError()" /><br/>
+   <div id="slideIndicator"></div>
+   <div id="timeIndicator"></div>
+   <img id="slidePreload" src="" /><br/>
 </body>
 
 <script>
@@ -63,14 +80,24 @@
    const fadein_time = 400
    const slide_prefix = "Slide"
    const slide_type = ".PNG"
-   var slidenum = 1
-   var slide = document.getElementById('slide')
-   var preload = document.getElementById('preload')
 
-   // Handle when slide fade has ended, without this it's impossible to retrigger
+   const slide = document.getElementById('slide')
+   const slidePreload = document.getElementById('slidePreload')
+   const slideIndicator = document.getElementById('slideIndicator')
+   const timeIndicator = document.getElementById('timeIndicator')
+
+   var slidenum = 1
+   var start = new Date()
+
+   // Start!
+   setSlide(slidenum)
+
+   // Handle when slide fadeout has ended, advance to next slide
    slide.addEventListener('webkitAnimationEnd', () => {
+      // Note. slidenum has already been incremented by clickSlide
       slide.setAttribute('src', slide_prefix + slidenum + slide_type)
-      preload.setAttribute('src', slide_prefix + (slidenum+1) + slide_type)
+      slidePreload.setAttribute('src', slide_prefix + (slidenum+1) + slide_type)
+      slideIndicator.innerHTML = slidenum
       slide.style.webkitAnimationDuration = fadein_time + 'ms'
       slide.style.webkitAnimationName = 'fadein'
    }, false)
@@ -78,6 +105,7 @@
    // Hacky code to set page title to the parent folder name
    var dir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'))
    document.title = dir.split('/')[dir.split('/').length - 1].replace(/%20/g, ' ')
+
    // Keyboard and mousewheel events 
    document.addEventListener("keydown", keyPress)
    slide.addEventListener("mousewheel", mouseWheel, false)
@@ -91,15 +119,17 @@
       slide.style.webkitAnimationDuration = fadeout_time + 'ms'
    }
 
-   // Set current slide
+   // Jump current slide
    function setSlide(num) {
-      slide.setAttribute('src', slide_prefix + num + slide_type)
-      preload.setAttribute('src', slide_prefix + (num+1) + slide_type)
+      slidenum = num
+      slide.setAttribute('src', slide_prefix + slidenum + slide_type)
+      slidePreload.setAttribute('src', slide_prefix + (slidenum+1) + slide_type)
+      num.innerHTML = slidenum
    }
 
    // Error loading slide image, either no slides found or end of the presentation
    function slideError(e) {
-      if (slidenum == 1) {
+      if (slidenum === 1) {
          slide.style.display = 'none'
          document.getElementById('message').style.display = 'inline'
       } else {
@@ -115,16 +145,27 @@
    }
 
    // Keyboard navigation:
-   //  Next slide: space, pgdown, down-cursor, right-cursor
-   //  Back slide: backspace, pgup, up-cursor, left-cursor
-   //  Jump to numbered slide: Number keys 1-9
-   //  Blank screen: 'b'
+   //   Next slide: space, pgdown, down-cursor, right-cursor
+   //   Back slide: backspace, pgup, up-cursor, left-cursor
+   //   Blank screen: 'b'
+   //   Hide slide number: 'n'
+   //   Show elapsed time (for 5 seconds): 't'
    function keyPress(e){
       var kc = e.which
       if (kc == 32 || kc == 34 || kc == 13 || kc == 40 || kc == 39) clickSlide(+1)
       if (kc == 33 || kc == 8 || kc == 37 || kc == 38) clickSlide(-1)
-      if (kc >= 49 && kc <= 57) { slidenum = kc - 48; setSlide(slidenum); }
-      if (kc == 66) { slide.toggle() }
+      if (kc == 66) { slide.style.display = slide.style.display == 'none' ? 'inline' : 'none' }
+      if (kc == 78) { slideIndicator.style.visibility = slideIndicator.style.visibility == 'hidden' ? 'visible' : 'hidden' }
+      if (kc == 84) { 
+         let tempDate = new Date()
+         let diffMs = tempDate - start
+         tempDate.setTime(diffMs)
+         timeIndicator.innerHTML = '🕑 ' + tempDate.getMinutes() + 'm'
+         timeIndicator.style.visibility = 'visible'
+         setTimeout(() => {
+            timeIndicator.style.visibility = 'hidden'
+         }, 5000);
+      }
    }
 
 </script>
