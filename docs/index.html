@@ -70,7 +70,7 @@
    // Handle when slide fade has ended, without this it's impossible to retrigger
    slide.addEventListener('webkitAnimationEnd', () => {
       slide.setAttribute('src', slide_prefix + slidenum + slide_type)
-      preload.setAttribute('src', slide_prefix + slidenum+1 + slide_type)
+      preload.setAttribute('src', slide_prefix + (slidenum+1) + slide_type)
       slide.style.webkitAnimationDuration = fadein_time + 'ms'
       slide.style.webkitAnimationName = 'fadein'
    }, false)
@@ -94,7 +94,7 @@
    // Set current slide
    function setSlide(num) {
       slide.setAttribute('src', slide_prefix + num + slide_type)
-      preload.setAttribute('src', slide_prefix + num+1 + slide_type)
+      preload.setAttribute('src', slide_prefix + (num+1) + slide_type)
    }
 
    // Error loading slide image, either no slides found or end of the presentation
