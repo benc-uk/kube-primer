@@ -1,9 +1,13 @@
+<!-- 
+   Simple slides
+   Ben Coleman
+   v3 - removed jQuery, using CSS3 animations
+-->
 <!doctype html>
 <html>
 <head>
    <title>Slides</title>
    <meta charset="utf-8">
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
    <style>
       html,body {
          background-color: #242424;
@@ -25,49 +29,75 @@
          left: 50%;
          top: 50%;
          transform: translate(-50%, -50%);
+
+         animation-timing-function: ease-in-out;         
       }
+      #message {
+         display: none;
+      }
+      @keyframes fadeout {
+         0%   { opacity: 1; }
+         100% { opacity: 0; }
+
+      }
+      @keyframes fadein {
+         0%   { opacity: 0; }
+         100% { opacity: 1; }
+      }      
    </style>
 </head>
 
 <body oncontextmenu="clickSlide(-1); return false;" onclick="clickSlide(+1)">
    <img id="slide" src="Slide1.png" onerror="slideError()" /><br/>
+   <div id="message">
+      <b>No slides found!</b><br/><br/>Please export all slides from PowerPoint to PNG<br/>e.g. Slide1.png, Slide2.png, etc
+   </div>
 </body>
 
 <script>
-   const slide_prefix = "Slide";
-   const slide_type = ".png";
-   var slidenum = 1;
-   var slide = $('#slide');
+   const fadeout_time = 300
+   const fadein_time = 400
+   const slide_prefix = "Slide"
+   const slide_type = ".png"
+   var slidenum = 1
+   var slide = document.getElementById('slide')
+
+   // Handle when slide fade has ended, without this it's impossible to retrigger
+   slide.addEventListener('webkitAnimationEnd', () => {
+      slide.setAttribute('src', slide_prefix + slidenum + slide_type)
+      slide.style.webkitAnimationDuration = fadein_time + 'ms'
+      slide.style.webkitAnimationName = 'fadein'
+   }, false)
 
    // Hacky code to set page title to the parent folder name
    var dir = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'))
    document.title = dir.split('/')[dir.split('/').length - 1].replace(/%20/g, ' ')
-   // Keyboard and mousewheel  events 
-   document.addEventListener("keydown", keyPress);
-   document.getElementById('slide').addEventListener("mousewheel", mouseWheel, false);
-   document.getElementById('slide').addEventListener("DOMMouseScroll", mouseWheel, false);
+   // Keyboard and mousewheel events 
+   document.addEventListener("keydown", keyPress)
+   slide.addEventListener("mousewheel", mouseWheel, false)
+   slide.addEventListener("DOMMouseScroll", mouseWheel, false)
 
    // Advance a slide with dir = +1, go back a slide with dir = -1
    function clickSlide(dir) {
-      slidenum += dir;
+      slidenum += dir
       if (slidenum < 1) { slidenum = 1; return; }
-      slide.fadeTo(300, 0, function() { 
-         slide.attr("src", slide_prefix + slidenum + slide_type).fadeTo(700, 1.0); 
-      }); 
+      slide.style.webkitAnimationName = 'fadeout'
+      slide.style.webkitAnimationDuration = fadeout_time + 'ms'
    }
 
    // Set current slide
    function setSlide(num) {
-      slide.attr('src', slide_prefix + num + slide_type);
+      slide.setAttribute('src', slide_prefix + num + slide_type)
    }
 
    // Error loading slide image, either no slides found or end of the presentation
    function slideError(e) {
       if (slidenum == 1) {
-         document.body.innerHTML = "<b>No slides found!</b><br/><br/>Please export all slides from PowerPoint to PNG<br/>e.g. Slide1.png, Slide2.png, etc";
+         slide.style.display = 'none'
+         document.getElementById('message').style.display = 'inline'
       } else {
-         alert("End Of Presentation");
-         setSlide(slidenum -= 1);
+         alert("End Of Presentation")
+         setSlide(slidenum -= 1)
       }
    }
 
@@ -83,10 +113,9 @@
    //  Jump to numbered slide: Number keys 1-9
    //  Blank screen: 'b'
    function keyPress(e){
-      var kc = e.which;
-      //console.log(kc);
-      if (kc == 32 || kc == 34 || kc == 13 || kc == 40 || kc == 39) clickSlide(+1);
-      if (kc == 33 || kc == 8 || kc == 37 || kc == 38) clickSlide(-1);
+      var kc = e.which
+      if (kc == 32 || kc == 34 || kc == 13 || kc == 40 || kc == 39) clickSlide(+1)
+      if (kc == 33 || kc == 8 || kc == 37 || kc == 38) clickSlide(-1)
       if (kc >= 49 && kc <= 57) { slidenum = kc - 48; setSlide(slidenum); }
       if (kc == 66) { slide.toggle() }
    }
