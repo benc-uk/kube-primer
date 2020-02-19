@@ -1,13 +1,14 @@
 <!-- 
-   Simple slides
+   Simple slides (MIT LICENSE)
    Ben Coleman
-   v3 - removed jQuery, using CSS3 animations, preload/cache next slide, slide num, timer
+   v3 (Feb 2020): removed jQuery, CSS3 animations, preload next slide, slide num, timer
 -->
 <!doctype html>
 <html>
 <head>
    <title>Slides</title>
    <meta charset="utf-8">
+   <link rel="shortcut icon" href="https://image.flaticon.com/icons/png/128/1206/1206407.png" type="image/png">
    <style>
       html,body {
          background-color: #242424;
@@ -40,7 +41,7 @@
       #slideIndicator {
          visibility: visible;
          position: absolute;
-         text-shadow: 3px 3px #111111;
+         text-shadow: 2px 2px #111111;
          bottom: 20px;
          left: 16px;
          font-size: 26px;
@@ -48,7 +49,7 @@
       #timeIndicator {
          visibility: visible;
          position: absolute;
-         text-shadow: 3px 3px #111111;
+         text-shadow: 2px 2px #111111;
          bottom: 20px;
          right: 16px;
          font-size: 26px;         
@@ -56,7 +57,6 @@
       @keyframes fadeout {
          0%   { opacity: 1; }
          100% { opacity: 0; }
-
       }
       @keyframes fadein {
          0%   { opacity: 0; }
