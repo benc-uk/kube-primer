@@ -44,11 +44,15 @@
          0%   { opacity: 0; }
          100% { opacity: 1; }
       }      
+      #preload {
+         visibility: hidden;
+      }
    </style>
 </head>
 
 <body oncontextmenu="clickSlide(-1); return false;" onclick="clickSlide(+1)">
    <img id="slide" src="Slide1.PNG" onerror="slideError()" /><br/>
+   <img id="preload" src="Slide2.PNG" /><br/>
    <div id="message">
       <b>No slides found!</b><br/><br/>Please export all slides from PowerPoint to PNG<br/>e.g. Slide1.png, Slide2.png, etc
    </div>
@@ -61,10 +65,12 @@
    const slide_type = ".PNG"
    var slidenum = 1
    var slide = document.getElementById('slide')
+   var preload = document.getElementById('preload')
 
    // Handle when slide fade has ended, without this it's impossible to retrigger
    slide.addEventListener('webkitAnimationEnd', () => {
       slide.setAttribute('src', slide_prefix + slidenum + slide_type)
+      preload.setAttribute('src', slide_prefix + slidenum+1 + slide_type)
       slide.style.webkitAnimationDuration = fadein_time + 'ms'
       slide.style.webkitAnimationName = 'fadein'
    }, false)
@@ -88,6 +94,7 @@
    // Set current slide
    function setSlide(num) {
       slide.setAttribute('src', slide_prefix + num + slide_type)
+      preload.setAttribute('src', slide_prefix + num+1 + slide_type)
    }
 
    // Error loading slide image, either no slides found or end of the presentation
