@@ -22,3 +22,4 @@ Alternatively take out sections or slides and use/present as needed
 - 1.3 Extra sections on AKS
 - 1.4 Minor refresh, ConfigMaps and service mesh
 - 1.5 Added Operators & CRD, removed Dev Spaces and some minor refreshes
+- 1.6 Removed Docker references, added GitOps & Dapr, general update
