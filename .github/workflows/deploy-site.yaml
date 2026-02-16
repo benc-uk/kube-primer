@@ -21,8 +21,11 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  OUT_DIR: "Kubernetes Technical Primer"
+
 jobs:
-  # Single deploy job since we're just deploying
+  # Single deploy job since we're just deploying static content to GitHub Pages
   deploy:
     environment:
       name: github-pages
@@ -35,14 +38,13 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Prepare
         run: |
-          mkdir 'Kubernetes Primer'
-          cp slides/* 'Kubernetes Primer'
-          cp src/index.html 'Kubernetes Primer'
+          mkdir "$OUT_DIR"
+          cp slides/* "$OUT_DIR"
+          cp src/index.html "$OUT_DIR"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: 'Kubernetes Primer'
+          path: "$OUT_DIR"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

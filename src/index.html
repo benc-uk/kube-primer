@@ -1,0 +1,793 @@
+<!--
+  Simple Slides (MIT LICENSE)
+  Ben Coleman
+  v4 (Feb 2026): modernized UI, navigation controls, thumbnail sidebar, progress bar
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Loading Slides...</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #1a1a2e;
+        --bg-surface: #16213e;
+        --bg-surface-hover: #1a2747;
+        --accent: #e94560;
+        --accent-dim: #c23152;
+        --text: #eee;
+        --text-muted: #8892a4;
+        --sidebar-width: 220px;
+        --controls-height: 56px;
+        --progress-height: 3px;
+        --transition-speed: 250ms;
+        --radius: 8px;
+      }
+
+      html,
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      /* ── Progress bar ─────────────────────── */
+      #progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: var(--progress-height);
+        background: var(--accent);
+        transition: width var(--transition-speed) ease;
+        z-index: 100;
+      }
+
+      /* ── Slide area ───────────────────────── */
+      #slideArea {
+        position: absolute;
+        top: var(--progress-height);
+        left: 0;
+        right: 0;
+        bottom: var(--controls-height);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        transition: left var(--transition-speed) ease;
+      }
+      body.sidebar-open #slideArea {
+        left: var(--sidebar-width);
+      }
+
+      #slide {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        transition: opacity var(--transition-speed) ease;
+        border-radius: 2px;
+        display: none;
+      }
+      #slide.fading {
+        opacity: 0;
+      }
+
+      #loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        font-size: 1rem;
+        color: var(--text-muted);
+      }
+      #loading .spinner {
+        width: 36px;
+        height: 36px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      #message {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        font-size: 1.1rem;
+        color: var(--text-muted);
+      }
+      #message b {
+        font-size: 1.4rem;
+        color: var(--text);
+      }
+
+      /* ── Controls bar ─────────────────────── */
+      #controls {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: var(--controls-height);
+        background: var(--bg-surface);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 0 12px;
+        z-index: 90;
+        transition: left var(--transition-speed) ease;
+      }
+      body.sidebar-open #controls {
+        left: var(--sidebar-width);
+      }
+
+      #controls button {
+        background: none;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text);
+        font-size: 1.05rem;
+        padding: 6px 14px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        transition:
+          background var(--transition-speed),
+          border-color var(--transition-speed);
+        line-height: 1;
+      }
+      #controls button:hover {
+        background: var(--bg-surface-hover);
+        border-color: rgba(255, 255, 255, 0.18);
+      }
+      #controls button:active {
+        background: rgba(255, 255, 255, 0.08);
+      }
+      #controls button.active {
+        background: var(--accent-dim);
+        border-color: var(--accent);
+      }
+
+      #controls .spacer {
+        flex: 1;
+      }
+
+      #slideCounter {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        min-width: 80px;
+        text-align: center;
+        font-variant-numeric: tabular-nums;
+      }
+      #slideCounter input {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+        color: var(--text);
+        width: 44px;
+        text-align: center;
+        font-size: 0.95rem;
+        padding: 2px 4px;
+        font-variant-numeric: tabular-nums;
+        font-family: inherit;
+      }
+      #slideCounter input:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      #timer {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        min-width: 70px;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ── Sidebar (table of contents) ──────── */
+      #sidebar {
+        position: fixed;
+        top: 0;
+        left: calc(-1 * var(--sidebar-width));
+        width: var(--sidebar-width);
+        height: 100%;
+        background: var(--bg-surface);
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+        z-index: 95;
+        transition: left var(--transition-speed) ease;
+        display: flex;
+        flex-direction: column;
+      }
+      body.sidebar-open #sidebar {
+        left: 0;
+      }
+
+      #sidebarHeader {
+        padding: 14px 12px 10px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        flex-shrink: 0;
+      }
+
+      #thumbnails {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      #thumbnails::-webkit-scrollbar {
+        width: 5px;
+      }
+      #thumbnails::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      #thumbnails::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 3px;
+      }
+
+      .thumb {
+        cursor: pointer;
+        border-radius: var(--radius);
+        border: 2px solid transparent;
+        overflow: hidden;
+        transition:
+          border-color var(--transition-speed),
+          transform 0.15s;
+        flex-shrink: 0;
+        position: relative;
+      }
+      .thumb:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: scale(1.02);
+      }
+      .thumb.active {
+        border-color: var(--accent);
+      }
+      .thumb img {
+        width: 100%;
+        display: block;
+        border-radius: calc(var(--radius) - 2px);
+      }
+      .thumb-label {
+        position: absolute;
+        bottom: 4px;
+        left: 6px;
+        background: rgba(0, 0, 0, 0.65);
+        color: #ddd;
+        font-size: 0.65rem;
+        padding: 1px 6px;
+        border-radius: 3px;
+      }
+
+      /* ── Help overlay ─────────────────────── */
+      #helpOverlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 200;
+        align-items: center;
+        justify-content: center;
+      }
+      #helpOverlay.visible {
+        display: flex;
+      }
+
+      #helpBox {
+        background: var(--bg-surface);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 28px 36px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+      #helpBox h2 {
+        font-size: 1.15rem;
+        margin-bottom: 18px;
+        font-weight: 600;
+      }
+      #helpBox table {
+        width: 100%;
+        font-size: 0.85rem;
+      }
+      #helpBox td {
+        padding: 5px 0;
+      }
+      #helpBox td:first-child {
+        color: var(--text-muted);
+        width: 55%;
+      }
+      #helpBox kbd {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 4px;
+        padding: 2px 7px;
+        font-family: inherit;
+        font-size: 0.8rem;
+      }
+      #helpBox .close-help {
+        margin-top: 18px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 0.8rem;
+      }
+
+      /* ── Touch swipe hint ─────────────────── */
+      @media (max-width: 640px) {
+        :root {
+          --sidebar-width: 180px;
+          --controls-height: 50px;
+        }
+        #controls button {
+          padding: 6px 10px;
+          font-size: 0.95rem;
+        }
+        #helpBox {
+          padding: 20px 24px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Progress bar -->
+    <div id="progress"></div>
+
+    <!-- Sidebar / table of contents -->
+    <nav id="sidebar">
+      <div id="sidebarHeader">Table of Contents</div>
+      <div id="thumbnails"></div>
+    </nav>
+
+    <!-- Slide display area -->
+    <main id="slideArea">
+      <div id="loading">
+        <div class="spinner"></div>
+        <span>Loading slides&hellip;</span>
+      </div>
+      <div id="message">
+        <b>No slides found!</b>
+        <span
+          >Please export slides from PowerPoint as PNG<br />e.g. Slide1.PNG,
+          Slide2.PNG, etc.</span
+        >
+      </div>
+      <img id="slide" alt="Slide" />
+    </main>
+
+    <!-- Bottom controls -->
+    <footer id="controls">
+      <button id="btnSidebar" title="Table of contents (T)">&#9776;</button>
+      <button id="btnPrev" title="Previous slide">&#9664;</button>
+      <span id="slideCounter">
+        <input
+          id="slideInput"
+          type="text"
+          value="1"
+          title="Jump to slide number"
+        />
+        / <span id="totalSlides">?</span>
+      </span>
+      <button id="btnNext" title="Next slide">&#9654;</button>
+      <span class="spacer"></span>
+      <span id="timer"></span>
+      <button id="btnFullscreen" title="Fullscreen (F)">&#x26F6;</button>
+      <button id="btnHelp" title="Keyboard shortcuts (?)">?</button>
+    </footer>
+
+    <!-- Help overlay -->
+    <div id="helpOverlay">
+      <div id="helpBox">
+        <h2>Keyboard Shortcuts</h2>
+        <table>
+          <tr>
+            <td>Next slide</td>
+            <td>
+              <kbd>&#8594;</kbd> <kbd>&#8595;</kbd> <kbd>Space</kbd>
+              <kbd>PgDn</kbd>
+            </td>
+          </tr>
+          <tr>
+            <td>Previous slide</td>
+            <td>
+              <kbd>&#8592;</kbd> <kbd>&#8593;</kbd> <kbd>Backspace</kbd>
+              <kbd>PgUp</kbd>
+            </td>
+          </tr>
+          <tr>
+            <td>First / Last slide</td>
+            <td><kbd>Home</kbd> / <kbd>End</kbd></td>
+          </tr>
+          <tr>
+            <td>Table of contents</td>
+            <td><kbd>T</kbd></td>
+          </tr>
+          <tr>
+            <td>Blank screen</td>
+            <td><kbd>B</kbd></td>
+          </tr>
+          <tr>
+            <td>Fullscreen</td>
+            <td><kbd>F</kbd></td>
+          </tr>
+          <tr>
+            <td>Show shortcuts</td>
+            <td><kbd>?</kbd></td>
+          </tr>
+        </table>
+        <div class="close-help">Press any key or click to close</div>
+      </div>
+    </div>
+
+    <!-- Preload (hidden) -->
+    <img id="slidePreload" style="display: none" alt="" />
+
+    <script>
+      (() => {
+        "use strict";
+
+        // ── Configuration ───────────────────────
+        const SLIDE_PREFIX = "Slide";
+        const SLIDE_EXT = ".PNG";
+        const FADE_MS = 200;
+
+        // ── DOM refs ────────────────────────────
+        const slide = document.getElementById("slide");
+        const slidePreload = document.getElementById("slidePreload");
+        const slideArea = document.getElementById("slideArea");
+        const progress = document.getElementById("progress");
+        const slideInput = document.getElementById("slideInput");
+        const totalSpan = document.getElementById("totalSlides");
+        const timerEl = document.getElementById("timer");
+        const thumbnails = document.getElementById("thumbnails");
+        const helpOverlay = document.getElementById("helpOverlay");
+        const messageEl = document.getElementById("message");
+        const loadingEl = document.getElementById("loading");
+
+        // ── State ───────────────────────────────
+        let currentSlide = 1;
+        let totalSlides = 0;
+        let transitioning = false;
+        const startTime = Date.now();
+        let timerInterval = null;
+
+        // ── Auto-detect slide count ─────────────
+        function detectSlides() {
+          return new Promise((resolve) => {
+            let count = 0;
+            function probe(n) {
+              const img = new Image();
+              img.onload = () => {
+                count = n;
+                probe(n + 1);
+              };
+              img.onerror = () => resolve(count);
+              img.src = SLIDE_PREFIX + n + SLIDE_EXT;
+            }
+            probe(1);
+          });
+        }
+
+        // ── Slide path helper ───────────────────
+        function slideSrc(n) {
+          return SLIDE_PREFIX + n + SLIDE_EXT;
+        }
+
+        // ── Navigate to a slide ─────────────────
+        function goToSlide(n, animate = true) {
+          if (transitioning) return;
+          n = Math.max(1, Math.min(n, totalSlides));
+          if (n === currentSlide && slide.src.includes(slideSrc(n))) return;
+
+          currentSlide = n;
+
+          if (animate) {
+            transitioning = true;
+            slide.classList.add("fading");
+            setTimeout(() => {
+              slide.src = slideSrc(n);
+              slide.classList.remove("fading");
+              transitioning = false;
+            }, FADE_MS);
+          } else {
+            slide.src = slideSrc(n);
+          }
+
+          // Preload neighbours
+          if (n < totalSlides) slidePreload.src = slideSrc(n + 1);
+
+          updateUI();
+        }
+
+        // ── Update UI state ─────────────────────
+        function updateUI() {
+          slideInput.value = currentSlide;
+          totalSpan.textContent = totalSlides;
+          progress.style.width = (currentSlide / totalSlides) * 100 + "%";
+
+          // Highlight active thumbnail
+          document.querySelectorAll(".thumb").forEach((el, i) => {
+            el.classList.toggle("active", i + 1 === currentSlide);
+          });
+
+          // Scroll active thumb into view
+          const activeThumb = thumbnails.querySelector(".thumb.active");
+          if (activeThumb)
+            activeThumb.scrollIntoView({
+              block: "nearest",
+              behavior: "smooth",
+            });
+        }
+
+        // ── Build thumbnail sidebar ─────────────
+        function buildThumbnails() {
+          thumbnails.innerHTML = "";
+          for (let i = 1; i <= totalSlides; i++) {
+            const div = document.createElement("div");
+            div.className = "thumb";
+            if (i === currentSlide) div.classList.add("active");
+
+            const img = document.createElement("img");
+            img.src = slideSrc(i);
+            img.alt = "Slide " + i;
+            img.loading = "lazy";
+
+            const label = document.createElement("span");
+            label.className = "thumb-label";
+            label.textContent = i;
+
+            div.appendChild(img);
+            div.appendChild(label);
+            div.addEventListener("click", (e) => {
+              e.stopPropagation();
+              goToSlide(i);
+            });
+            thumbnails.appendChild(div);
+          }
+        }
+
+        // ── Timer ───────────────────────────────
+        function updateTimer() {
+          const elapsed = Date.now() - startTime;
+          const mins = Math.floor(elapsed / 60000);
+          const secs = Math.floor((elapsed % 60000) / 1000);
+          timerEl.textContent =
+            String(mins).padStart(2, "0") + ":" + String(secs).padStart(2, "0");
+        }
+
+        // ── Toggle helpers ──────────────────────
+        function toggleSidebar() {
+          document.body.classList.toggle("sidebar-open");
+          const btn = document.getElementById("btnSidebar");
+          btn.classList.toggle(
+            "active",
+            document.body.classList.contains("sidebar-open"),
+          );
+        }
+
+        function toggleFullscreen() {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen();
+          }
+        }
+
+        function toggleHelp() {
+          helpOverlay.classList.toggle("visible");
+        }
+
+        // ── Slide input (jump to) ───────────────
+        slideInput.addEventListener("keydown", (e) => {
+          e.stopPropagation();
+          if (e.key === "Enter") {
+            const n = parseInt(slideInput.value, 10);
+            if (!isNaN(n)) goToSlide(n);
+            slideInput.blur();
+          } else if (e.key === "Escape") {
+            slideInput.value = currentSlide;
+            slideInput.blur();
+          }
+        });
+        slideInput.addEventListener("focus", () => slideInput.select());
+
+        // ── Button handlers ─────────────────────
+        document.getElementById("btnPrev").addEventListener("click", (e) => {
+          e.stopPropagation();
+          goToSlide(currentSlide - 1);
+        });
+        document.getElementById("btnNext").addEventListener("click", (e) => {
+          e.stopPropagation();
+          goToSlide(currentSlide + 1);
+        });
+        document.getElementById("btnSidebar").addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleSidebar();
+        });
+        document
+          .getElementById("btnFullscreen")
+          .addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleFullscreen();
+          });
+        document.getElementById("btnHelp").addEventListener("click", (e) => {
+          e.stopPropagation();
+          toggleHelp();
+        });
+
+        // ── Keyboard navigation ─────────────────
+        document.addEventListener("keydown", (e) => {
+          // Don't capture when typing in the slide input
+          if (document.activeElement === slideInput) return;
+
+          // Close help overlay on any key
+          if (helpOverlay.classList.contains("visible")) {
+            helpOverlay.classList.remove("visible");
+            return;
+          }
+
+          switch (e.key) {
+            case "ArrowRight":
+            case "ArrowDown":
+            case " ":
+            case "PageDown":
+            case "Enter":
+              e.preventDefault();
+              goToSlide(currentSlide + 1);
+              break;
+            case "ArrowLeft":
+            case "ArrowUp":
+            case "Backspace":
+            case "PageUp":
+              e.preventDefault();
+              goToSlide(currentSlide - 1);
+              break;
+            case "Home":
+              e.preventDefault();
+              goToSlide(1);
+              break;
+            case "End":
+              e.preventDefault();
+              goToSlide(totalSlides);
+              break;
+            case "b":
+            case "B":
+              slide.style.visibility =
+                slide.style.visibility === "hidden" ? "" : "hidden";
+              break;
+            case "f":
+            case "F":
+              toggleFullscreen();
+              break;
+            case "t":
+            case "T":
+              toggleSidebar();
+              break;
+            case "?":
+            case "/":
+              toggleHelp();
+              break;
+          }
+        });
+
+        // ── Click on slide area to advance ──────
+        slideArea.addEventListener("click", () => goToSlide(currentSlide + 1));
+        slideArea.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+          goToSlide(currentSlide - 1);
+        });
+
+        // ── Mouse wheel ─────────────────────────
+        slideArea.addEventListener(
+          "wheel",
+          (e) => {
+            e.preventDefault();
+            if (e.deltaY > 0) goToSlide(currentSlide + 1);
+            if (e.deltaY < 0) goToSlide(currentSlide - 1);
+          },
+          { passive: false },
+        );
+
+        // ── Touch / swipe support ───────────────
+        let touchStartX = 0,
+          touchStartY = 0;
+        slideArea.addEventListener(
+          "touchstart",
+          (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+          },
+          { passive: true },
+        );
+        slideArea.addEventListener(
+          "touchend",
+          (e) => {
+            const dx = e.changedTouches[0].screenX - touchStartX;
+            const dy = e.changedTouches[0].screenY - touchStartY;
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+              dx < 0
+                ? goToSlide(currentSlide + 1)
+                : goToSlide(currentSlide - 1);
+            }
+          },
+          { passive: true },
+        );
+
+        // ── Close help on overlay click ─────────
+        helpOverlay.addEventListener("click", (e) => {
+          if (e.target === helpOverlay) toggleHelp();
+        });
+
+        // ── Set page title from folder name ─────
+        const dir = window.location.pathname.substring(
+          0,
+          window.location.pathname.lastIndexOf("/"),
+        );
+        const folderName = decodeURIComponent(dir.split("/").pop());
+        if (folderName) document.title = folderName;
+
+        // ── Init ────────────────────────────────
+        detectSlides().then((count) => {
+          loadingEl.style.display = "none";
+          totalSlides = count;
+          if (count === 0) {
+            slide.style.display = "none";
+            messageEl.style.display = "flex";
+            return;
+          }
+
+          // Only listen for errors after we know slides exist
+          slide.addEventListener("error", () => {
+            if (currentSlide > totalSlides) {
+              goToSlide(totalSlides, false);
+            }
+          });
+
+          slide.style.display = "block";
+          totalSpan.textContent = totalSlides;
+          buildThumbnails();
+          goToSlide(1, false);
+          timerInterval = setInterval(updateTimer, 1000);
+          updateTimer();
+        });
+      })();
+    </script>
+  </body>
+</html>
