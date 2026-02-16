@@ -27,6 +27,11 @@ Alternatively, take out sections or slides and use/present as needed.
 - **DevOps & Observability** — CI/CD lifecycle, GitOps, Prometheus/Grafana/OpenTelemetry, Helm, Kustomize
 - **Azure Kubernetes Service** — AKS overview, networking modes, Entra Workload ID, Entra ID for RBAC, Azure Monitor Container Insights, Cluster Autoscaler
 
+## Accessing the Content
+
+- Online hosted on GitHub Pages - [code.benco.io/kube-primer](https://code.benco.io/kube-primer/)
+- Downloadable as PowerPoint or PDF - https://github.com/benc-uk/kube-primer/releases/latest
+
 ## Change Log
 
 - 1.0 Initial release
