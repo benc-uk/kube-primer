@@ -36,6 +36,12 @@ else
 fi
 
 if [[ -n "$CONVERT" ]]; then
+  echo "==> Found image converter: $CONVERT"
+else
+  echo "==> No image converter found, skipping thumbnail generation"
+fi
+
+if [[ -n "$CONVERT" ]]; then
   echo "==> Generating thumbnails (using $CONVERT)"
   mkdir "$OUT_DIR/thumbs"
   for f in "$OUT_DIR"/Slide*.PNG; do
