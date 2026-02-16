@@ -1,16 +1,28 @@
-# Slide 13
+# Pods
 
-Scale and run pods across multiple nodes
-Deployments let you run & scale stateless workloads in Kubernetes
-Deployments & Replica Sets
-Deployments describe a replicated set of Pods
-A Deployment represents desired state - Rolling updates used to safely roll out changes
-You scale Deployments up & down
-Deployments typically run stateless workloads
-Deployments use ReplicaSets
-Deployment
-- name: MyApp
-- replicas: 3
-ReplicaSet
-- replicas: 3
-pods
+## Pods are the primary way of running your workloads in Kubernetes
+
+Fundamental building block of Kubernetes
+
+- Pods run one or more containers
+- Containers in a pod share network/storage
+- Pods each have their own IP address
+- Pods expose one or more ports
+- Pods are scheduled and run on a Node
+
+Pod
+
+shared network & filesystem
+
+Container
+A
+
+Container B
+
+10.0.4.58
+
+port: 8080
+
+port: 8080
+
+Example Pod

@@ -1,27 +1,28 @@
-# Slide 58
+# Init Containers
 
-kind: Pod
-metadata:
-name: monitored-webapp
-spec:
-containers:
-- name: webserver
-image: nginx
-initContainers:
-- name: log-monitor
-restartPolicy: Always
-image: my-log-monitor
-args: ["--log-dir", "/var/logs/nginx"]
-Sidecars
-Pods co-locate multiple containers together, sharing network and storage
-Sidecar is a pattern where additional containers provide enhancing/optional capabilities
-Bind containers together to form a single cohesive unit of service
-Since Kubernetes 1.33, sidecars are natively defined as init containers with restartPolicy: Always
-Pod
-Container
-nginx
-Container
-(sidecar)
-logmon
-/var/logs/nginx
-The important part!
+## Init Containers are optional special containers that run only once when a pod is started Init containers run to completion (terminate) Main containers in a pod will not start until all Init Containers have run
+
+- ...
+- initContainers:
+- - name: init-mysql
+- image: bencuk/mysqldb
+- command: ["./scripts/checkDB"]
+- ...
+- initContainers:
+- - name: init-demodata
+- image: bcdemo.azurecr.io/smilr/data-api
+- command: ['sh', '-c', 'cd demoData && node demodb.js']
+- env:
+- - name: MONGO_CONNSTR
+- value: mongodb://mongodb-svc.default
+- - name: WIPE_DB
+- value: "true"
+
+Application configuration
+Bootstrapping apps
+Running utility & start-up scripts
+Data injection
+
+Uses
+
+kubernetes.io/docs/concepts/workloads/pods/init-containers

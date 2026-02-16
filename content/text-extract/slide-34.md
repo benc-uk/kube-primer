@@ -1,19 +1,25 @@
-# Slide 34
+# Secrets
 
-$ kubectl create configmap my-config --from-file=/path/to/foobar.conf
-configmap/my-config created
-ConfigMaps
-Hold application configuration data
-Key value pairs (like secrets), YAML or free format (e.g. XML, conf)
-Pass to containers as env vars or mount as volume
+## Hold sensitive information such as passwords, certs and API keys Don’t place sensitive values as plain text in deployment files Don’t “bake” secrets into your container images with config files Can be mounted in pods as files or environmental variables
+
+- $ kubectl create secret generic my-secret --from-literal connString='admin:superSecret@some-host'
+- secret/my-secret created
+
+TLS certificates
 Application configuration
+Authentication with private registry
+
 Uses
-kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap
-containers:- name: my-foobar-server
-volumeMounts:
-- name: config-vol
-mountPath: /etc/config
-volumes:
-- name: config-vol configMap: name: my-config
+
+kubernetes.io/docs/concepts/configuration/secret
+
+containers:
+- name: my-web-server
+env:
+- name: DATABASE_CONNECTION_STRING
+valueFrom:
+secretKeyRef:
+name: my-secret
+key: connString
+
 myapp.yaml
-Mount into container at given path

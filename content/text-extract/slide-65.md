@@ -1,17 +1,29 @@
-# Slide 65
+# Horizontal Pod Autoscaler (HPA)
 
-Automatically scale cluster resources
-Scale cluster wide by adding/removing Nodes
-Cluster Autoscaler (CA)
-Adjusts the size of the Kubernetes cluster, adding & removing Nodes when - Pods are pending state due to insufficient resources (scale out)- Nodes have been underutilized for a period of time (scale in)
-Tightly coupled to the cloud and environment hosting the cluster & Nodes
-CA
-Node
-New Node
-Pending pods are scheduled
-New Node is brought online
-Additional node(s) needed
-Pods are in pending state
-Pod
-Pod
-Kubernetes Cluster
+## Dynamically scale stateless workloads across available nodes
+
+Automatically scale stateless workloads
+
+- Use to horizontally scale stateless Pods in ReplicaSet/Deployment
+- Rules define desired Pod replica count based on observed metrics
+- Takes metrics from the metrics API fed from the Metrics Server
+- Supports extension via custom metrics
+
+Horizontal Pod Autoscaler
+
+pod 1
+
+pod n
+
+…
+
+Deployment
+
+Metrics Server
+
+Scale
+
+metrics data
+
+- Increase replicas
+- Decrease replicas

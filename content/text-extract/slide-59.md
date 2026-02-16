@@ -1,21 +1,35 @@
-# Slide 59
+# Sidecars
 
-kind: Pod
-metadata:
-name: machineLearning
-spec:
-containers:
-- name: trainModel
-image: ml-image:latest
-nodeSelector:
-hardware: gpu
-Node Selector
-A simple constraint to which Nodes are eligible to run a Pod
-Key value pairs of labels, to be matched against Node’s labels
-Not a ‘hard rule’, other Pods that have no nodeSelector can still land on the node
-Assign workloads requiring special hardware or resources, e.g. GPU
-Physical partitioning of cluster
-Separating noisy Pods
+## Pods co-locate multiple containers together, sharing network and storage Sidecar is a pattern where additional containers provide enhancing/optional capabilities Bind containers together to form a single cohesive unit of service Since Kubernetes 1.33, sidecars are natively defined as init containers with restartPolicy: Always
+
+- kind: Pod
+- metadata:
+- name: monitored-webapp
+- spec:
+- containers:
+- - name: webserver
+- image: nginx
+- initContainers:
+- - name: log-monitor
+- restartPolicy: Always
+- image: my-log-monitor
+- args: ["--log-dir", "/var/logs/nginx"]
+
+Decompose architecture
+Build services incrementally
+Bolt on features
+
 Uses
+
 Pod
-kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+
+Container
+nginx
+
+Container
+(sidecar)
+logmon
+
+/var/logs/nginx
+
+The important part!

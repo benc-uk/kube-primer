@@ -1,20 +1,34 @@
-# Slide 76
+# Helm – The Basics
 
-Kubernetes native manifest configuration & parametrization
-Out of the box & template-free way to customize application configuration
-Kustomize
-Kustomize is a tool for customizing Kubernetes configurations
-It updates manifests on the fly to add, remove or update configuration options.
-Standalone CLI tool and a native part of kubectl
-Achieves similar outcomes to Helm but uses a very different paradigm of bases + overlays + patches
-Used for environment-specific config (dev/staging/prod)
-/base/
-deployment.yaml
-service.yaml
-kustomization.yaml
-/overlays/dev/kustomization.yaml
-/overlays/staging/kustomization.yaml
-/overlays/prod/kustomization.yaml
-$ kubectl apply –kustomize /overlays/prod/
-Kustomize requires you to think about your directories and file placement
-https://kustomize.io/
+| helm | Client tool to manage and work with Helm |
+| --- | --- |
+| Chart | Package of Kubernetes resources in template form |
+| Template | Kubernetes YAML with directives in Go template language format, e.g. {{ blah }} |
+| Release | When installing a chart into Kubernetes it becomes a release |
+| Values | Used at install time to customise the release, either from CLI or file |
+| Dependency | A chart can require other external charts, Helm will automatically pull/update |
+
+docs.helm.sh/glossary
+
+values.yaml
+
+Chart: mychart/
+
+helm
+
++
+
++
+
+$ helm install foo ./mychart -f values.yaml
+
+Release:
+foo
+
+foo Pods
+
+foo Services
+
+foo-pods
+
+foo-services

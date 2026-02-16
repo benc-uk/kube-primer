@@ -1,15 +1,21 @@
-# Slide 20
+# Stateful Sets
 
-Running Pods across all Nodes
-DaemonSets run system Pods for monitoring & network
-Daemon Sets
-A DaemonSet ensures that all Nodes in the cluster run a given Pod. Pods will be created/removed as Nodes are added/removed
-Used for special system and cluster daemons, logging, storage, etc.
-DaemonSets are not often used for normal app workloads
-Node
-1
-Node
-2
-Node
-n
-DaemonSet
+## Use a StatefulSet rather than Deployment for stateful workloads
+
+Handling Stateful workloads
+
+- A StatefulSet is like a Deployment except Pods get well defined names and replicas start in ordered sequence
+- StatefulSets retain identity regardless of which Node they run on
+- Each Pod in a StatefulSet will bind to the same defined PersistentVolumeClaim
+
+StatefulSet
+- name: MyDbSet - serviceName: "mongo"
+- replicas: 2
+
+mongo-0
+
+mongo-1
+
+pvc-mongo-0
+
+pvc-mongo-1

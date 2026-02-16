@@ -1,29 +1,33 @@
-# Slide 60
+# Node Selector
 
-$ kubectl taint nodes myNode001 team=team1:NoSchedule
-node/myNode001 tainted
-kind: Pod
-spec:
-tolerations:
-- key: team
-operator: Exists value: "team1"
-effect: NoSchedule
-Affinity and Taints
-Affinity and anti-affinity provide advanced ways to control Pod placement- ‘Hard’ rules and ‘soft’ rules- Weighting and expressions
-Taints and Tolerations. Taints are applied to Nodes and will not accept Pods that don’t have a matching Toleration
+## A simple constraint to which Nodes are eligible to run a Pod Key value pairs of labels, to be matched against Node’s labels Not a ‘hard rule’, other Pods that have no nodeSelector can still land on the node
+
+- kind: Pod
+- metadata:
+- name: machineLearning
+- spec:
+- containers:
+- - name: trainModel
+- image: ml-image:latest
+- nodeSelector:
+- hardware: gpu
+
 Assign workloads requiring special hardware or resources, e.g. GPU
 Physical partitioning of cluster
 Separating noisy Pods
+
 Uses
-kubernetes.io/docs/concepts/configuration/taint-and-toleration/
-kind: Pod
-spec:
-affinity:
-nodeAffinity:
-requiredDuringSchedulingIgnoredDuringExecution:
-preferredDuringSchedulingIgnoredDuringExecution:
-podAffinity:
-requiredDuringSchedulingIgnoredDuringExecution:
-preferredDuringSchedulingIgnoredDuringExecution:
-Unlike taints & nodeSelectors, affinity rules can also apply to pods. i.e. do or don’t schedule these pods together
-kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+
+Pod
+
+Name: aks-nodepool1-18655374-vmss000000
+Roles: agent
+Labels: agentpool=nodepool1
+beta.kubernetes.io/arch=amd64
+hardware=gpu
+
+Can be scheduled on
+
+Node
+
+kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector

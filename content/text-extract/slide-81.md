@@ -1,8 +1,11 @@
-# Slide 81
+# Microsoft Entra Workload ID
 
-Microsoft Entra ID for RBAC
-Use Microsoft Entra ID to govern and control cluster access
-Assign roles & permissions in Kubernetes RBAC, based on EntraID users & groups
-Roles & groups in EntraID define who has access to the cluster
-Downsides: Requires extra tools like kubelogin to access the cluster
-learn.microsoft.com/azure/aks/enable-authentication-microsoft-entra-id
+- Allows your Pods to authenticate and obtain tokens to access resources in Azure via managed identities in Entra ID
+- Workload (i.e. your code) should be using MSAL & Azure Identity client libraries
+- Replaces the deprecated ‘Pod managed identity’ approach
+- Uses a combination of OIDC federation and ServiceAccount token volume projection
+
+learn.microsoft.com/azure/aks/workload-identity-overview
+
+Azure Key Vault
+A common use case for Workload Identity is access to Azure Key Vault for obtaining secrets

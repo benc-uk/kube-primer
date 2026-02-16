@@ -1,10 +1,20 @@
-# Slide 74
+# Modern Observability Stack
 
-Package Manager for Kubernetes
-- Use Helm to install software/apps in your cluster- Create Helm charts for your own apps, for CI/CD releases
-Helm
-Helm simplifies deployment into Kubernetes using charts
-A chart consists of one or more Kubernetes YAML templates + supporting files
-Helm charts support dynamic parameters & functions important for automated pipeline deployments
-Thousands of charts exist for standard software, tools & packages
-https://helm.sh
+## Prometheus & Grafana — the standard for Kubernetes monitoring
+
+- Grafana — Visualization & Dashboards
+- Connects to Prometheus as a data source
+- Rich, customizable dashboards for cluster health, pod performance, and application metrics
+- Thousands of pre-built community dashboards available
+- Supports additional data sources: Azure Monitor, Loki (logs), Tempo (traces)
+
+- Prometheus — Metrics Collection
+- Pull-based model: scrapes metrics from pods and services at regular intervals – no agents
+- Pods & Nodes expose a /metrics endpoint; Prometheus discovers targets automatically
+- Stores time-series data with a powerful query language (PromQL)
+- Powers alerting via Alertmanager
+- CNCF graduated project — the default metrics standard for Kubernetes
+
+OpenTelemetry — The Source
+Vendor-neutral standard for collecting metrics, logs, and traces from your applications
+Instrument once, export to Prometheus, Grafana, Jaeger, or any backend

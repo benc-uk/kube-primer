@@ -1,28 +1,30 @@
-# Slide 36
+# Resource Management
 
-...
-readinessProbe:
-httpGet:
-path: /status
-port: 8080
-initialDelaySeconds: 25
-periodSeconds: 10
-failureThreshold: 3
-...
-livenessProbe:
-exec:
-command: ["mysqladmin", "ping"]
-initialDelaySeconds: 30
-periodSeconds: 20
-Probes
-Readiness probes tell Kubernetes your container is ready to accept traffic
-Liveness probes tell Kubernetes to restart your container, use with caution
-Startup probes disable checks until the app is initialised
-Probes can be HTTP, TCP or execute commands
-Maintain availability
-Restart unhealthy containers
-Efficient traffic routing
+## Define compute (CPU & memory) resource limits and requests for containers Allows Kubernetes to make better scheduling placement decisions Limits are enforced, requests aren’t CPU resources are fractions of 1 vCore
+
+- apiVersion: v1
+- kind: Pod
+- metadata:
+- name: demo-app
+- spec:
+- containers:
+- - name: db
+- image: mysql
+- resources:
+- requests:
+- memory: "64Mi"
+- cpu: "0.25"
+- limits:
+- memory: "512Mi"
+
+Efficient use of cluster resources
+Prevent rogue workloads starving the cluster
+Good practice
+
 Uses
-kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/
-Specifying a liveness probe is optional and can cause side effects
-Specifying a readiness probe is highly recommended
+
+kubernetes.io/docs/concepts/configuration/manage-compute-resources-container
+
+Specifying limits & requests is optional but STRONGLY recommended
+
+Certain capabilities such as auto scaling are dependant on setting resources

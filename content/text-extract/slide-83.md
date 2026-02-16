@@ -1,12 +1,15 @@
-# Slide 83
+# Azure Monitor Container Insights
 
-Cluster Auto Scaler
-Node & infra autoscaling with Azure Scale Sets
-Enables the standard Kubernetes Cluster Autoscaler (CA)
-HPA scales your workload by adding pods, and the Cluster Autoscaler scales your infrastructure by adding nodes when those new pods can't be scheduled
-Leverages Azure VM Scale Sets
-Settable per node pool if using multiple pools
---enable-cluster-autoscaler
---min-count 1
---max-count 8
-docs.microsoft.com/azure/aks/cluster-autoscaler
+learn.microsoft.comazure/azure-monitor/containers/kubernetes-monitoring-overview
+
+Observability and monitoring for AKS clusters
+
+- Cluster health dashboards with drill-down from cluster → node → pod → container
+- Live container log streaming
+- Recommended metric-based alerts out of the box
+- Integration with Azure Managed Prometheus and Azure Managed Grafana for a full observability stack (or bring your own)
+
+Fully integrated monitoring for AKS within the Azure Monitor platform
+Collects metrics, logs, and events from nodes, pods, and containers automatically
+Pairs with Azure Managed Prometheus for metrics collection and Azure Managed Grafana for dashboards
+Sends data to a Log Analytics workspace for querying with KQL

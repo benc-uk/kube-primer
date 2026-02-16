@@ -1,27 +1,49 @@
-# Slide 28
+# Kubectl – Common Commands
 
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-name: mydeploy
-spec:
-replicas: 4
-selector:
-matchLabels:
-app: myapp
-template:
-metadata:
-labels:
-app: myapp
-spec:
-containers:
-- name: mycontainer
-image: bencuk/vuego-demoapp
-ports:
-- containerPort: 4000
-Kubernetes Declarative Model
-YAML or JSON documents
-Describe any Kubernetes object
-Objects & properties map directly to the Kubernetes API
-You can combine multiple objects into a single file (separate with ---)
-Note. JSON is also supported, but YAML is recommended for readability
+get
+
+Display one or many resources
+
+get nodes
+get pods
+get all
+get pod pod123
+get nodes -w
+
+delete
+
+Delete resources
+
+delete deploy mydeploy
+delete -f myapp.yaml
+delete -l app=foo
+
+apply
+
+Create resources from manifests
+
+apply -f myapp.yaml
+apply –f ./stuff
+apply –f http://example.net/app.yaml
+
+describe
+
+Get details of any resource
+
+describe pod pod138
+describe svc myservice
+describe pod -l app=myapp
+
+…others…
+
+Some other commands
+
+logs pod138
+rollout restart deploy mydeploy
+exec pod138 -- ls
+
+kubernetes.io/docs/reference/kubectl/overview
+
+kubernetes.io/docs/reference/kubectl/cheatsheet
+
+Set up aliases & autocomplete!

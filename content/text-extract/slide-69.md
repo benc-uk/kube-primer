@@ -1,24 +1,24 @@
-# Slide 69
+# Custom Resources Definitions (CRDs)
 
-The Operator pattern: CRD + Custom Controller
-A common and easily understood way to extend Kubernetes
-Operators
-An operator is custom controller that acts on a given set of CRDs – defines behaviour
-Controller is run as a regular pod & deployment
-Custom operator reconciler code subscribes to the Kubernetes API & watches for CRD changes
-Discover & use:
-artifacthub.io
-operatorhub.io
-Build your own:
-Kubebuilder
-KUDO
-Operator SDK
-Custom Resource
-Operator
-reconcile
-crud
-user
-tracking
-change
-events
-state
+## Extend Kubernetes with new entities and data models
+
+Extend the Kubernetes API and object model
+
+- An extension of the Kubernetes API that is not available in a default Kubernetes installation
+- Can represent application specific or generalised entities, e.g. BackupJob, Report
+- A CRD is schema & state – doesn’t define behaviour
+- Manage via the API & kubectl same as standard built-in resource types
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+spec:
+names:
+plural: pets
+kind: Pet
+openAPIV3Schema:
+type: object
+properties:
+petName:
+type: string
+
+$ kubectl get pets

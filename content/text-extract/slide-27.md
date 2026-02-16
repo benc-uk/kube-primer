@@ -1,6 +1,3 @@
-# Slide 27
+# Command Line - kubectl
 
-Kubectl – Common Commands
-kubernetes.io/docs/reference/kubectl/overview
-kubernetes.io/docs/reference/kubectl/cheatsheet
-Set up aliases & autocomplete!
+## Main management & control interface to Kubernetes Can manage multiple clusters Secure interface to Kubernetes API Used for *everything* cluster ops and application deployment & management

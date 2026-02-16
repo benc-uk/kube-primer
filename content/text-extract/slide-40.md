@@ -1,10 +1,16 @@
-# Slide 40
+# Kubernetes Ecosystem – Many Projects
 
-The Kubernetes API
-It’s Kind Of Important!
-Every object in Kubernetes and any interactions with the cluster are shaped by the API and the API spec - YAML manifests schema - kubectl commands
-Served by the API server running on control plane node(s)
-Kubernetes version dependant
-Aggregated – single API server endpoint fronts multiple versioned APIs, and it's extensible both via CRDs and via API aggregation
-kubectl proxy – Create a local tunnel to the API server if you want to get your hands dirty
-kubernetes.io/docs/reference/#api-reference
+| Monitoring & Observability | Prometheus, Grafana, OpenTelemetry |
+| --- | --- |
+| Network Plugins (CNI) | Cilium, Calico |
+| Ingress & Traffic | NGINX Ingress, Gateway API, Envoy |
+| Service Mesh | Istio, Linkerd, Cilium |
+| Storage | Rook, Longhorn |
+| Security & Policy | Kyverno, Gatekeeper, Falco |
+| Package Mgmt & Config | Helm, Kustomize |
+| GitOps & CD | Argo CD, Flux |
+| Autoscaling | KEDA |
+| Secrets Management | External Secrets Operator |
+| Serverless | Knative |
+
+landscape.cncf.io

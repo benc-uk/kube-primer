@@ -1,28 +1,25 @@
-# Slide 35
+# ConfigMaps
 
-apiVersion: v1
-kind: Pod
-metadata:
-name: demo-app
-spec:
-containers:
-- name: db
-image: mysql
-resources:
-requests:
-memory: "64Mi"
-cpu: "0.25"
-limits:
-memory: "512Mi"
-Resource Management
-Define compute (CPU & memory) resource limits and requests for containers
-Allows Kubernetes to make better scheduling placement decisions
-Limits are enforced, requests aren’t
-CPU resources are fractions of 1 vCore
-Efficient use of cluster resources
-Prevent rogue workloads starving the cluster
-Good practice
+## Hold application configuration data Key value pairs (like secrets), YAML or free format (e.g. XML, conf) Pass to containers as env vars or mount as volume
+
+- $ kubectl create configmap my-config --from-file=/path/to/foobar.conf
+- configmap/my-config created
+
+Application configuration
+
 Uses
-kubernetes.io/docs/concepts/configuration/manage-compute-resources-container
-Specifying limits & requests is optional but STRONGLY recommended
-Certain capabilities such as auto scaling are dependant on setting resources
+
+kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap
+
+containers: - name: my-foobar-server
+volumeMounts:
+- name: config-vol
+mountPath: /etc/config
+volumes:
+- name: config-vol configMap: name: my-config
+
+myapp.yaml
+
+Reference to config map object
+
+Mount into container at given path

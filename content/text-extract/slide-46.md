@@ -1,14 +1,29 @@
-# Slide 46
+# Network Policies
 
-Optional Addon – Auto configuration of public DNS
-Commonly used with an Ingress for host based external routing
-External DNS
-Allows for dynamic configuration of DNS records
-Seamlessly keep public DNS in sync with your Ingress and external services
-Supports Azure DNS, AWS, CloudFlare, Google DNS etc
-SIG project: github.com/kubernetes-sigs/external-dns
-A record: foo.example.com
-IP: 52.55.80.100
-foo
-52.55.80.100
-example.com
+Control traffic flow between Pods and Namespaces
+
+- By default, all pods can communicate with each other Network Policies act as firewall rules to restrict this
+- Define allowed ingress (incoming) and egress (outgoing) traffic per pod using label selectors
+- Rules can target pods, namespaces, or IP CIDR blocks
+- Common Use Cases:
+- Isolate namespaces
+- Restrict database & other access
+- Default deny
+- Compliance — enforce zero-trust network
+
+kind: NetworkPolicy
+metadata:
+name: db-allow-api-only
+spec:
+podSelector:
+matchLabels:
+app: database
+ingress:
+- from:
+- podSelector:
+matchLabels:
+app: api
+ports:
+- port: 5432
+
+Allow access to DB service only from API pods

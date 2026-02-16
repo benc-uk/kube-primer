@@ -1,0 +1,10 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "pip": true,
+    "which": true,
+    "python": true,
+    "python3": true,
+    "source": true,
+    "cd": true
+  }
+}

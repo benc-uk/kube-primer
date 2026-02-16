@@ -1,11 +1,36 @@
-# Slide 23
+# Namespaces
 
-Regulating & governing access
-RBAC is optional, but a standard feature for any new cluster
-Role Based Access Control (RBAC)
-RBAC controls user and system access to the API and Kubernetes resources
-Roles define privileges as sets of verbs and API resources
-RoleBinding grants Roles to Users and ServiceAccounts
-User
-ServiceAccount
-Note. Kubernetes doesn’t include a native identity system or a way to manage end user accounts
+## When first learning Kubernetes use the default Namespace
+
+Logical Separation & Cluster Organisation
+
+- Most Kubernetes objects live inside a Namespace
+- Kubernetes starts with two Namespaces: default and kube-system
+- You can create Namespaces to logically partition a cluster, e.g. for dev/test or different customers
+- Nodes will be shared across Namespaces
+- A namespace does not provide isolation & multi-tenancy
+
+Kubernetes Cluster
+
+Namespace
+“alpha”
+
+Namespace
+“beta”
+
+pod
+
+pod
+
+pod
+
+Node
+1
+
+Node
+2
+
+Node
+3
+
+svc

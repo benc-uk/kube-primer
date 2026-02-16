@@ -1,17 +1,15 @@
-# Slide 52
+# Describing Objects
 
-$ kubectl logs deploy/data-api
-Found 3 pods, using pod/data-api-84fb56497b-6cgth
-> smilr-data-api@3.2.0 start /home/app
-> node server.js
-### Node environment mode is 'production'
-### Connection attempt 1 to MongoDB server mongodb-svc.default
-### Yay! Connected to MongoDB server
-### Server listening on 4000
-Container Logs
-Access stdout & stderr output from pods with:kubectl logs
-Get output from a deployment or pod or single container
-Follow logs with -f
-View any errors output from containers
-See what your workloads are doing
+## Use kubectl describe to inspect status of any object in your cluster Returns events and all properties & status details Use label selectors to query multiple objects
+
+- $ kubectl describe deploy/data-api
+- $ kubectl describe pod/data-api-84fb56497b-6cgth
+- $ kubectl describe service/frontend
+- $ kubectl describe pod –l app=data-api
+
+View and understand the status of anything in your cluster
+Troubleshoot pending/failed workloads
+
 Uses
+
+kubernetes.io/docs/tasks/debug-application-cluster

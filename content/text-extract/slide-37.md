@@ -1,24 +1,30 @@
-# Slide 37
+# Probes
 
-kind: Pod
-metadata:
-name: command-demo
-spec:
-containers:
-- name: command-demo-container
-image: debian
-command: ["printenv"]
-args: ["HOSTNAME", "KUBERNETES_PORT"]
-Container Arguments
-Use args to pass arguments to the container, pass an array of strings
-Use the command property to override the starting command in a container. Rarely used.
-Note. These correspond to the Docker Entrypoint and Cmd parameters
-Use base images to run utilities & scripts
-Debugging & trouble shooting
-Application configuration
-Parameter passing
+## Readiness probes tell Kubernetes your container is ready to accept traffic Liveness probes tell Kubernetes to restart your container, use with caution Startup probes disable checks until the app is initialised Probes can be HTTP, TCP or execute commands
+
+- ...
+- readinessProbe:
+- httpGet:
+- path: /status
+- port: 8080
+- initialDelaySeconds: 25
+- periodSeconds: 10
+- failureThreshold: 3
+- ...
+- livenessProbe:
+- exec:
+- command: ["mysqladmin", "ping"]
+- initialDelaySeconds: 30
+- periodSeconds: 20
+
+Maintain availability
+Restart unhealthy containers
+Efficient traffic routing
+
 Uses
-kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/
-Description | Docker field name | Kubernetes field name
-The command run by the container | Entrypoint | command
-The arguments passed to the command | Cmd | args
+
+kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/
+
+Specifying a liveness probe is optional and can cause side effects
+
+Specifying a readiness probe is highly recommended

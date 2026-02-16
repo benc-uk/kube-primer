@@ -1,12 +1,20 @@
-# Slide 14
+# Deployments & Replica Sets
 
-Network access to Pods
-Services are how you connect to Pods over the network
-Services
-Pods are ephemeral - they can move/die/change without notice. In general, users do not directly access Pods
-Services are an abstraction which defines a logical set of Pods and a policy by which to access them
-Services use labels and selectors to map to Pods
-Services are assigned IP addresses and DNS names
+## Deployments let you run & scale stateless workloads in Kubernetes
+
+Scale and run pods across multiple nodes
+
+- Deployments describe a replicated set of Pods
+- A Deployment represents desired state - Rolling updates used to safely roll out changes
+- You scale Deployments up & down
+- Deployments typically run stateless workloads
+- Deployments use ReplicaSets
+
+Deployment
+- name: MyApp
+- replicas: 3
+
+ReplicaSet
+- replicas: 3
+
 pods
-Network Traffic
-Service

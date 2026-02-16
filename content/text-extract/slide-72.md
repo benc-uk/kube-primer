@@ -1,8 +1,37 @@
-# Slide 72
+# Common DevOps Containers Lifecycle
 
-Declarative approach to IaC & continuous deployment
-Alternative approach for managing and deploying applications to Kubernetes
-GitOps
-GitOps is relatively new approach & a set of practices & tools to manage your infrastructure application configurations using Git as desired state
-A “pull” approach vs “push” – special controllers (e.g. Flux, Argo CD) in Kubernetes watch and poll for changes and reconcile the updates.
-More complex & not as well adopted as the Helm/kubectl push CD flow but has some advantages.
+Container Registry
+
+Developer
+
+Repair Items / Fixes
+
+CI/CD flow with pipelines/workflows and Helm
+
+Staging
+
+Prod
+
+Inner Loop
+
+git
+
+Container Build
+Pipeline
+
+Trigger / Webhooks
+
+Release
+Pipeline
+
+$ docker build/run
+$ make run-tests
+$ git push
+
+CI
+
+CD
+
+Test
+
+Observability / Events

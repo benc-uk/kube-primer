@@ -1,23 +1,26 @@
-# Slide 33
+# Environmental Variables
 
-$ kubectl create secret generic my-secret --from-literal connString='admin:superSecret@some-host'
-secret/my-secret created
-Secrets
-Hold sensitive information such as passwords, certs and API keys
-Don’t place sensitive values as plain text in deployment files
-Don’t “bake” secrets into your container images with config files
-Can be mounted in pods as files or environmental variables
-TLS certificates
+## Environmental variables are the standard way to configure containers at runtime Containerized app consumes environmental variables in OS standard way Key value pairs Application/container specific
+
+- apiVersion: v1
+- kind: Pod
+- metadata:
+- name: envar-demo
+- labels:
+- purpose: demonstrate-envars
+- spec:
+- containers:
+- - name: envar-demo-container
+- image: gcr.io/google-samples/node-hello:1.0
+- env:
+- - name: DEMO_GREETING
+- value: "Hello from the environment"
+- - name: DEMO_FAREWELL
+- value: "Such a sweet sorrow"
+
 Application configuration
-Authentication with private registry
+Parameter passing
+
 Uses
-kubernetes.io/docs/concepts/configuration/secret
-containers:
-- name: my-web-server
-env:
-- name: DATABASE_CONNECTION_STRING
-valueFrom:
-secretKeyRef:
-name: my-secret
-key: connString
-myapp.yaml
+
+kubernetes.io/docs/tasks/inject-data-application/define-environment-variable-container/

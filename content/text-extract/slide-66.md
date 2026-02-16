@@ -1,9 +1,12 @@
-# Slide 66
+# Pod
 
-KEDA
-Event-driven autoscaling - scale on external metrics, queues, and events
-KEDA is a Kubernetes add on that helps scale applications based on real-world events
-KEDA can adjust the size & number of your containers automatically, depending on the workload like the number of messages in a queue or incoming requests.
-Works alongside Kubernetes components like the Horizontal Pod Autoscaler
-Over 80 different ‘scalers’ available, each providing a different source of events to base scaling rules on
-https://keda.sh/
+## Scale cluster wide by adding/removing Nodes
+
+Automatically scale cluster resources
+
+- Adjusts the size of the Kubernetes cluster, adding & removing Nodes when - Pods are pending state due to insufficient resources (scale out) - Nodes have been underutilized for a period of time (scale in)
+- Tightly coupled to the cloud and environment hosting the cluster & Nodes
+
+CA
+
+Kubernetes Cluster

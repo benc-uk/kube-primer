@@ -1,11 +1,12 @@
-# Slide 75
+# Helm
 
-Helm – The Basics
-helm | Client tool to manage and work with Helm
-Chart | Package of Kubernetes resources in template form
-Template | Kubernetes YAML with directives in Go template language format, e.g. {{ blah }}
-Release | When installing a chart into Kubernetes it becomes a release
-Values | Used at install time to customise the release, either from CLI or file
-Dependency | A chart can require other external charts, Helm will automatically pull/update
-docs.helm.sh/glossary
-$ helm install foo ./mychart -f values.yaml
+## - Use Helm to install software/apps in your cluster - Create Helm charts for your own apps, for CI/CD releases
+
+Package Manager for Kubernetes
+
+- Helm simplifies deployment into Kubernetes using charts
+- A chart consists of one or more Kubernetes YAML templates + supporting files
+- Helm charts support dynamic parameters & functions important for automated pipeline deployments
+- Thousands of charts exist for standard software, tools & packages
+
+https://helm.sh

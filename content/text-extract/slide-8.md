@@ -1,16 +1,26 @@
-# Slide 8
+# Highly Simplified Architecture
 
-Internal Architecture
-Control Plane
-Users
-API Server
-Scheduler
-Controller Manager
-Cloud Controller
-etcd
-Devs / Operators
-Cloud Provider APIs
-…
 Kubernetes
-Cluster
-Exposed services
+
+Control Plane
+
+Image Registry
+
+API
+
+Services
+
+Users
+
+Developers
+& Admins
+
+Your Cluster
+
+Nodes + Container Runtime
+
+Pods
+
+( your apps/workloads )
+
+Controllers

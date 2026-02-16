@@ -1,18 +1,23 @@
-# Slide 18
+# Data Volumes & Mounts
+
+## Volumes hold data and state for Pods and containers
 
 Handling State & Data
-Persistent Volumes retain data long term, outside of Pods
-Persistent Volumes
-A PersistentVolume allows you to hold data independent of Pod lifecycle
-A pod uses a PersistentVolumeClaim to bind to a PersistentVolume- ReadWriteOnce - mounted on a single Node (e.g. db)- ReadWriteMany - mounted on multiple Nodes
-Many storage plugins exist: NFS, iSCSI, Azure (Disk & Files), CSI, Ceph, Gluster, AWS
+
+- Filesystem of running containers is ephemeral. All data written will be lost on a restart
+- Use Volumes to hold data or state you want to keep, or to inject data into a Pod
+- Volumes are mounted into a container at a mountPath
+- Many types of storage can be used to back the Volume
+
 Pod
+
 Container
 /opt/data
+
 Container
 /var/www
+
 Volume
 datavol
-PersistentVolumeClaim
-PersistentVolume
-pv1
+
+Warning! A volume shares lifecycle with the Pod, so are not persistent

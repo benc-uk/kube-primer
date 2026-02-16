@@ -1,27 +1,36 @@
-# Slide 57
+# Deeper Dive on Manifests
 
-...
-initContainers:
-- name: init-mysql
-image: bencuk/mysqldb
-command: ["./scripts/checkDB"]
-...
-initContainers:
-- name: init-demodata
-image: bcdemo.azurecr.io/smilr/data-api
-command: ['sh', '-c', 'cd demoData && node demodb.js']
-env:
-- name: MONGO_CONNSTR
-value: mongodb://mongodb-svc.default
-- name: WIPE_DB
-value: "true"
-Init Containers
-Init Containers are optional special containers that run only once when a pod is started
-Init containers run to completion (terminate)
-Main containers in a pod will not start until all Init Containers have run
-Application configuration
-Bootstrapping apps
-Running utility & start-up scripts
-Data injection
-Uses
-kubernetes.io/docs/concepts/workloads/pods/init-containers
+## Manifests for Deployments, StatefulSets and DaemonSets have a similar pattern & structure The spec part contains replicas and a selector and also a template for the objects it will replicate The template will contain another spec, typically a Pod spec A Pod spec contains one or more containers
+
+- kind: Deployment
+- apiVersion: apps/v1
+- metadata:
+- name: my-deployment
+- labels:
+- cheese: cheddar
+- spec:
+- replicas: 1
+- selector:
+- matchLabels:
+- thing: my-app
+- template:
+- metadata:
+- labels:
+- thing: my-app
+- cake: chocolate
+- spec:
+- containers:
+- - name: my-container
+- image: nginx
+
+The selector of the spec MUST match one label in the template
+
+Deployment name will also be used as name prefix for the
+ReplicaSet and Pods
+
+Required field but mostly not important
+
+Labels for the deployment are
+optional
+
+?? So what do all these labels mean ??

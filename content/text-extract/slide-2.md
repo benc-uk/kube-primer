@@ -1,82 +1,10 @@
-# Slide 2
+# What Does This Primer Cover?
 
-Introduction To Kubernetes
-Why Kubernetes?
-Core Concepts and Terms
-Simplified Architecture
-Internal Architecture
-Highly Extensible
-When To Use Kubernetes
-Core Components
-Pods
-Deployments & Replica Sets
-Services
-Services – Simplified Illustration
-DNS and Service Discovery
-Data Volumes & Mounts
-Persistent Volumes
-Stateful Sets
-Daemon Sets
-Jobs & CronJobs
-Namespaces
-Role Based Access Control (RBAC)
-Putting It All Together
-Using Kubernetes
-Command Line - kubectl
-Kubectl – Common Commands
-Kubernetes Declarative Model
-Idempotent Updates & Desired State
-Labels & Selectors
-Configuring Basic Workloads
-Environmental Variables
-Secrets
-ConfigMaps
-Resource Management
-Probes
-Container Arguments
-DevOps & Observability
-Common DevOps Containers Lifecycle
-GitOps
-Modern Observability Stack
-Helm Introduction
-Helm – The Basics
-Kustomize
-Azure Kubernetes Service
-Managed Kubernetes on Azure – AKS
-AKS Networking
-Microsoft Entra Workload ID
-Microsoft Entra ID for RBAC
-Azure Monitor Container Insights
-Cluster Auto Scaler
-TABLE OF CONTENTS
-Beyond The Basics
-Kubernetes Ecosystem
-The Kubernetes API
-Container Runtimes & Tooling
-Additional Network Topics
-Ingress
-Gateway API
-Network Policies
-External DNS
-Cert Manager
-Service Mesh
-Putting It All Together
-Debugging and Troubleshooting Workloads
-Describing Objects
-Container Logs
-Debug & Get Shell Access
-Advanced Pod Configuration
-Deeper Dive on Manifests
-Init Containers
-Sidecars
-Node Selector
-Affinity and Taints
-Pod Security
-Scaling
-Manually Scaling
-Horizontal Pod Autoscaler (HPA)
-Cluster Autoscaler (CA)
-KEDA
-Extending Kubernetes
-Custom Resource Definitions
-Operators
+Why Kubernetes The purpose and value of Kubernetes for orchestration, and when it's the right (or wrong) choice
+Building Blocks The core objects and primitives that make up every Kubernetes cluster and what they mean
+Day-to-Day Operation & Use How to deploy, configure, and manage workloads in practice
+Going Deeper Networking, security, the wider ecosystem, and how to debug when things go wrong
+Scaling Strategies for scaling workloads and infrastructure automatically
+Extensibility How Kubernetes can be extended with add-ons, extensions & custom resources and operators
+DevOps & Observability Tooling and practices around CI/CD, monitoring, and configuration management
+Azure Kubernetes Service Using Kubernetes as a managed service on Azure with AKS

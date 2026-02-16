@@ -1,10 +1,23 @@
-# Slide 47
+# External DNS
 
-Optional Addon – Automate issuing of TLS certs & manage them inside your cluster
-Issue TLS certs for HTTPS access to services & Ingress
-Cert Manager
-Ensures certificates are valid and up to date
-Tightly coupled to Ingress & Gateway API,
-Renew certificates before expiry
-Uses ACME issuers, i.e. Let’s Encrypt
-cert-manager.io
+## Commonly used with an Ingress for host based external routing
+
+Optional Addon – Auto configuration of public DNS
+
+- Allows for dynamic configuration of DNS records
+- Seamlessly keep public DNS in sync with your Ingress and external services
+- Supports Azure DNS, AWS, CloudFlare, Google DNS etc
+- SIG project: github.com/kubernetes-sigs/external-dns
+
+external dns
+
+A record: foo.example.com
+IP: 52.55.80.100
+
+foo
+
+foo
+
+52.55.80.100
+
+example.com
