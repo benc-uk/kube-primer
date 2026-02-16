@@ -17,6 +17,7 @@ mkdir "$OUT_DIR"
 # Copy slides and HTML
 cp slides/* "$OUT_DIR"
 cp src/index.html "$OUT_DIR"
+cp src/favicon.svg "$OUT_DIR"
 
 # Set page title
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -36,19 +37,14 @@ else
 fi
 
 if [[ -n "$CONVERT" ]]; then
-  echo "==> Found image converter: $CONVERT"
-else
-  echo "==> No image converter found, skipping thumbnail generation"
-fi
-
-if [[ -n "$CONVERT" ]]; then
   echo "==> Generating thumbnails (using $CONVERT)"
   mkdir "$OUT_DIR/thumbs"
   for f in "$OUT_DIR"/Slide*.PNG; do
+    echo "    Processing $f..."
     $CONVERT -limit time 120 -limit memory 256MiB "$f" -resize 300x -quality 70 "$OUT_DIR/thumbs/$(basename "$f")"
   done
 else
-  echo "==> Skipping thumbnails (ImageMagick not found, install with: sudo apt install imagemagick)"
+  echo "==> Skipping thumbnails (ImageMagick or convert not found, install with: sudo apt install imagemagick)"
 fi
 
 # Generate manifest so the viewer doesn't need to probe slides one-by-one
