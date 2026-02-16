@@ -6,7 +6,7 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Loading Slides...</title>
+    <title>Slides</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
@@ -488,8 +488,18 @@
         const startTime = Date.now();
         let timerInterval = null;
 
-        // ── Auto-detect slide count ─────────────
-        function detectSlides() {
+        // ── Get slide count (manifest or probe) ──
+        async function getSlideCount() {
+          // Try manifest first (instant, generated at build time)
+          try {
+            const resp = await fetch("slides.json");
+            if (resp.ok) {
+              const data = await resp.json();
+              if (data.total > 0) return data.total;
+            }
+          } catch (_) {}
+
+          // Fallback: sequential probe (slow, for local dev)
           return new Promise((resolve) => {
             let count = 0;
             function probe(n) {
@@ -505,9 +515,12 @@
           });
         }
 
-        // ── Slide path helper ───────────────────
+        // ── Slide path helpers ──────────────────
         function slideSrc(n) {
           return SLIDE_PREFIX + n + SLIDE_EXT;
+        }
+        function thumbSrc(n) {
+          return "thumbs/" + SLIDE_PREFIX + n + SLIDE_EXT;
         }
 
         // ── Navigate to a slide ─────────────────
@@ -565,7 +578,12 @@
             if (i === currentSlide) div.classList.add("active");
 
             const img = document.createElement("img");
-            img.src = slideSrc(i);
+            img.src = thumbSrc(i);
+            // Fall back to full image if thumbnail missing (local dev)
+            img.onerror = function () {
+              this.onerror = null;
+              this.src = slideSrc(i);
+            };
             img.alt = "Slide " + i;
             img.loading = "lazy";
 
@@ -756,15 +774,15 @@
         });
 
         // ── Set page title from folder name ─────
-        const dir = window.location.pathname.substring(
-          0,
-          window.location.pathname.lastIndexOf("/"),
-        );
-        const folderName = decodeURIComponent(dir.split("/").pop());
-        if (folderName) document.title = folderName;
+        // const dir = window.location.pathname.substring(
+        //   0,
+        //   window.location.pathname.lastIndexOf("/"),
+        // );
+        // const folderName = decodeURIComponent(dir.split("/").pop());
+        // if (folderName) document.title = folderName;
 
         // ── Init ────────────────────────────────
-        detectSlides().then((count) => {
+        getSlideCount().then((count) => {
           loadingEl.style.display = "none";
           totalSlides = count;
           if (count === 0) {
