@@ -29,7 +29,7 @@ Alternatively, take out sections or slides and use/present as needed.
 
 ## Accessing the Content
 
-- Online hosted on GitHub Pages - [kube-primer.benc.dev](https://kube-primer.benc.dev/)
+- Online hosted on GitHub Pages - [kube-primer.benco.io](http://kube-primer.benco.io)
 - Downloadable as PowerPoint or PDF - https://github.com/benc-uk/kube-primer/releases/latest
 
 ## Change Log
